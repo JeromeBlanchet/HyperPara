@@ -1,6 +1,8 @@
 import numpy as np
 from Manager import HpManager
 from Manager.HpManager import HPtype, Hyperparameter, ContinuousDomain, DiscreteDomain
+from Dispatcher import HpDispatcher
+from Dispatcher.HpDispatcher import HpDispatcher
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
@@ -104,7 +106,41 @@ for it in tqdm(range(20)):
 print(sample_y)
 
 best_idx = np.argmin(sample_y)
-print("\nThe best hyperparameters is {}.\n\nFor a score of {}\n\n".format(
+print("\nThe best hyperparameters are {}.\n\nFor a score of {}\n\n".format(
+    sample_x[best_idx],
+    sample_y[best_idx]
+))
+
+
+####################################
+#       PARALLELIZATION
+####################################
+print("GAUSSIAN PROCESS OPTIMIZATION")
+# Launch using dispatcher
+HpDispatcher
+
+sample_x, sample_y = [], []
+
+for it in tqdm(range(20)):
+
+    if it < 5:
+        hparams = opt1.get_next_hparams()
+        hparams = opt2.get_next_hparams()
+    else:
+        # For Gabriel
+        # pending_x are the point that currently evaluate in another process.
+        hparams = opt3.get_next_hparams(sample_x, sample_y, pending_x=None)
+        hparams2 = HpDispatcher.imap_iterable(opt2.get_next_hparams, args=(sample_x, sample_y, None))
+        hparams3 = HpDispatcher.imap_iterable(opt3.get_next_hparams, args=(sample_x, sample_y, None))
+
+    sample_x.extend([hparams2])
+    sample_x.extend([hparams3])
+    sample_y.extend([[objective(hparams)]])
+
+print(sample_y)
+
+best_idx = np.argmin(sample_y)
+print("\nThe best hyperparameters are {}.\n\nFor a score of {}\n\n".format(
     sample_x[best_idx],
     sample_y[best_idx]
 ))
