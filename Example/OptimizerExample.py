@@ -1,6 +1,6 @@
 import numpy as np
 from Manager import HpManager
-from Manager.HpManager import HPtype, Hyperparameter, ContinuousDomain, DiscreteDomain
+from Manager.Domain import ContinuousDomain, DiscreteDomain
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
